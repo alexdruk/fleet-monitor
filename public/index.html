@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon Fleet Monitor</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="full-center"><div class="spinner"></div></div>
+  </div>
+
+  <!-- Edit Remark Modal -->
+  <div id="remark-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-icon">✏️</span>
+        <div>
+          <h3>Save Change</h3>
+          <p id="remark-desc" class="modal-desc"></p>
+        </div>
+      </div>
+      <textarea id="remark-text" placeholder="Enter reason for this change (required)..." rows="3"></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeRemarkModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmRemark()">Save Change</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Modal -->
+  <div id="chart-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box modal-wide" id="chart-modal-box">
+      <div class="modal-header">
+        <h3 id="chart-title">Metric Trend</h3>
+        <button class="btn-icon" id="chart-close-btn">✕</button>
+      </div>
+      <div class="chart-wrap" id="chart-wrap"><canvas id="metric-chart"></canvas></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
