@@ -6,9 +6,23 @@ const multer    = require('multer');
 const XLSX      = require('xlsx');
 
 const app    = express();
-const PORT   = 3000;
+const PORT = process.env.PORT || 3000;
 const SECRET = 'fleet-monitor-jwt-secret-2026';
 const DB     = path.join(__dirname, 'data/db.json');
+
+// ── Ensure DB exists before anything else ────────────────────────────────────
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+if (!fs.existsSync(DB)) {
+  console.log('No database found — seeding now...');
+  try {
+    require('child_process').execSync('node seed.js', { cwd: __dirname, stdio: 'inherit' });
+    console.log('Seed complete.');
+  } catch(e) {
+    console.error('Seed failed:', e.message);
+    process.exit(1);
+  }
+}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -16,7 +30,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
 // ── DB helpers ────────────────────────────────────────────────────────────────
-const readDB  = () => JSON.parse(fs.readFileSync(DB, 'utf8'));
+const readDB = () => {
+  try { return JSON.parse(fs.readFileSync(DB, 'utf8')); }
+  catch(e) { console.error('readDB error:', e.message); return { users:[], locations:[], reports:[] }; }
+};
 const writeDB = (db) => fs.writeFileSync(DB, JSON.stringify(db, null, 2));
 
 // ── Auth middleware ───────────────────────────────────────────────────────────
